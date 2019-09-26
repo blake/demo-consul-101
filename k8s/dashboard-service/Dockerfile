@@ -1,3 +1,9 @@
+FROM golang
+
+COPY main.go .
+
+RUN go get -d -v golang.org
+
 FROM alpine:3.7
 WORKDIR /app
 ADD . /app
