@@ -1,19 +1,28 @@
 #!/usr/bin/env sh
 
-APPNAME=$(basename `pwd`)
+set -e
+
+APPNAME=$(basename "${PWD}")
+
+# OS and architecture of the build machine
+BUILDOS=${BUILDOS:-linux}
+BUILDARCH=${BUILDARCH:-amd64}
+
+# Target OS and architecture
+TARGETOS=${TARGETOS:-linux}
+TARGETARCH=${TARGETARCH:-amd64}
 
 # Build linux version
-GOOS=linux GOARCH=amd64 go build -v .
-mkdir -p dist/linux-amd64
-mv $APPNAME dist/linux-amd64/
-cd dist/linux-amd64
-zip $APPNAME.zip $APPNAME
+GOOS=${TARGETOS} GOARCH=${TARGETARCH} go get && go build -v .
+mkdir -p "dist/${TARGETOS}-${TARGETARCH}"
+mv "${APPNAME}" "dist/${TARGETOS}-${TARGETARCH}/"
+cd "dist/${TARGETOS}-${TARGETARCH}" || exit
+zip "${APPNAME}.zip" "${APPNAME}"
 cd ../../
 
 # Build for local platform
-GOOS=darwin GOARCH=amd64 go build -v .
-mkdir -p dist/darwin-amd64
-mv $APPNAME dist/darwin-amd64/
-cd dist/darwin-amd64
-zip $APPNAME.zip $APPNAME
-cd ../../
+GOOS=${BUILDOS} GOARCH=${BUILDARCH} go build -v .
+mkdir -p "dist/${BUILDOS}-${BUILDARCH}"
+mv "${APPNAME}" "dist/${BUILDOS}-${BUILDARCH}/"
+cd "dist/${BUILDOS}-${BUILDARCH}" || exit
+zip "${APPNAME}.zip" "${APPNAME}"

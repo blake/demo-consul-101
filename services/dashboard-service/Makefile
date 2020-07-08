@@ -10,6 +10,9 @@ build: ## Build docker image
 	docker build -t $(IMAGE_NAME):$(VERSION) .
 	docker tag $(IMAGE_NAME):$(VERSION) $(IMAGE_NAME):$(VERSION)
 
+multi-arch:
+	docker buildx build --tag '$(IMAGE_NAME):$(VERSION)' --platform linux/386,linux/amd64,linux/arm64 --output="type=registry" .
+
 push: ## docker push the service images
 	docker push $(IMAGE_NAME):$(VERSION)
 
